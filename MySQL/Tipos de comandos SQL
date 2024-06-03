@@ -1,0 +1,103 @@
+Tipos de comandos SQL
+
+DDL (Lenguaje de definición de datos):
+-Define estructuras de bases de datos (CREATE, ALTER, DROP, TRUNCATE, RENAME)
+
+Estos comandos se utilizan para definir y administrar la estructura de los objetos en la base de datos. Algunos ejemplos de comandos DDL son:
+
+CREAR UNA BASE DATOS: Crea una nueva tabla.
+
+	CREATE DATABASE universidad; 
+	USE universidad;
+
+CREAR TABLA: Crea una nueva tabla.
+
+	CREATE TABLE estudiant (
+	  rut varchar(20) NOT NULL,
+	  nombre varchar(80) NOT NULL,
+	  apellidos varchar(40) NOT NULL,
+	  fecha_naci date NOT NULL,
+	  KEY rut (rut)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+ALTER TABLE: Modifica la estructura de una tabla existente.
+
+	ALTER TABLE universidad.estudiant 
+	RENAME TO  universidad.estudiantes;
+
+	ALTER TABLE universidad.estudiantes MODIFY apellidos VARCHAR(80) NOT NULL ;
+
+	ALTER TABLE universidad.estudiantes CHANGE nombre nombres VARCHAR(80) NOT NULL;
+
+
+CREAR ÍNDICE: Crea un índice en una tabla para mejorar el rendimiento de las consultas.
+
+	ALTER TABLE universidad.estudiantes ADD COLUMN id INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (id);
+
+DROP TABLE: Elimina una tabla.
+
+	DROP DATABASE universidad;
+	DROP TABLE estudiantes;
+
+
+DML (Lenguaje de manipulación de datos):
+-Manipula los datos (INSERT, UPDATE, DELETE)
+
+	INSERT INTO `universidad`.`estudiantes`
+	(`rut`,
+	`nombres`,
+	`apellidos`,
+	`fecha_naci`)
+	VALUES
+	('123-4', 'JHONNY','DOE','2020-12-31'); 
+
+	UPDATE `universidad`.`estudiantes` SET 
+	`nombres` = 'JHON' WHERE (`id` = '1');
+
+	DELETE FROM `universidad`.`estudiantes` WHERE (`id` = '2');
+
+
+DQL (Lenguaje de consulta de datos):
+-Selecciona datos (SELECT)
+
+	SELECT * FROM `universidad`.`estudiantes`;
+
+DCL (Lenguaje de control de datos):
+-Se utilizan para administrar permisos y seguridad en la base de datos (GRANT, REVOKE, SET, SHOW)
+
+GRANT ALL ON employees.* TO 'userdb'@'%';"
+
+REVOKE INSERT ON employees.* FROM 'userdb'@'%';
+
+SET PASSWORD FOR 'userdb'@'host' = PASSWORD('nueva_clave');
+
+SHOW GRANTS FOR 'userdb'@'host';
+
+
+TCL (Lenguaje de control transaccional):
+-Gestiona las transacciones de bases de datos(START TRANSACTION, SAVEPOINT, COMMIT, ROLLBACK)
+
+START TRANSACTION;
+
+INSERT INTO estudiantes (rut,nombres,apellidos,fecha_naci)VALUES  ("1759911-1","Nombre Prueba 1","Apellido1","2020-7-9");
+
+SELECT * FROM estudiantes WHERE rut = '1759911-1';
+
+SAVEPOINT punto1;
+
+INSERT INTO estudiantes (rut,nombres,apellidos,fecha_naci)VALUES  ("1759912-3","Nombre Prueba 2","Apellido2","2023-7-9");
+
+SELECT * FROM estudiantes WHERE rut = '1759912-3';
+
+SAVEPOINT punto2;
+
+UPDATE estudiantes SET apellidos = 'NUEVO' WHERE rut = '1759912-3';
+
+SELECT * FROM estudiantes WHERE rut = '1759912-3';
+
+ROLLBACK TO punto1;  -- Deshace la inserción de 'Nombre Prueba 2' y la actualización del apellido 'NUEVO'
+
+SELECT * FROM estudiantes WHERE rut = '1759912-3';
+
+COMMIT;  -- Solo se guarda la inserción de 'Nombre Prueba 1'
